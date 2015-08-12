@@ -123,39 +123,239 @@ A block modifier is a class used to modify the appearance of a block in a certai
 </div>
 ```
 
-<a name="componentName-descendantName"></a>
-### componentName-descendantName
+<a name="blockUsage"></a>
+### Block usage
 
-A component descendant is a class that is attached to a descendant node of a component. It's responsible for applying presentation directly to the descendant on behalf of a particular component. Descendant names must be written in camel case.
+Not everything is a block. This is not minecraft. Just because an HTML element has children doesn't necessarily mean it is, or should be a block. If an HTML element, and it's styling makes no sense in the layout anywhere outside its position, it is not a block. If an HTML element cannot be reused, it is probably not a block. If an HTML element has no children, it is probably not a block. There are cases where this is not true, as each case is unique.
 
+*A bad block example*
 ```html
-<article class="tweet">
-  <header class="tweet-header">
-    <img class="tweet-avatar" src="{$src}" alt="{$alt}">
-    …
-  </header>
-  <div class="tweet-body">
-    …
-  </div>
-</article>
+<div class="main-navigation">
+  <ul class="__list link-list">
+    <li class="__item item">
+      <a href="#" class="__link">
+    </li>
+    <li class="__item item">
+      <a href="#" class="__link">
+    </li>
+  </ul>
+</div>
 ```
-
-<a name="is-stateOfComponent"></a>
-### componentName.is-stateOfComponent
-
-Use `is-stateName` for state-based modifications of components. The state name must be Camel case. **Never style these classes directly; they should always be used as an adjoining class.**
-
-JS can add/remove these classes. This means that the same state names can be used in multiple contexts, but every component must define its own styles for the state (as they are scoped to the component).
 
 ```css
-.tweet { /* … */ }
-.tweet.is-expanded { /* … */ }
+.main-navigation {
+  /* … */
+
+  .__list {
+    /* … */
+  }
+}
+
+.link-list {
+  /* … */
+
+  .__item {
+    /* … */
+  }
+}
+
+.item {
+  /* … */
+
+  .__link {
+    /* … */
+  }
+}
+```
+
+*The "item" block is not really a block, it is actually only meaningful under the link-list (or even main-navigation) block. As such it should just be an element, even though it has a child element.*
+
+*Fixed example*
+```html
+<div class="main-navigation">
+  <ul class="__list link-list">
+    <li class="__item">
+      <a href="#" class="__link">
+    </li>
+    <li class="__item">
+      <a href="#" class="__link">
+    </li>
+  </ul>
+</div>
+```
+
+```css
+.main-navigation {
+  /* … */
+
+  .__list {
+    /* … */
+  }
+}
+
+.link-list {
+  /* … */
+
+  .__item {
+    /* … */
+  }
+
+  .__link {
+    /* … */
+  }
+}
+```
+
+<a name="elements"></a>
+## Elements
+
+Syntax: `<block-name>__<element-name>`
+Syntax-shortened: `__<element-name>`
+
+<a name="elementNaming"></a>
+### Element naming
+
+Block name is a dash separated list of words describing the block and its use.
+
+Care should be taken not to use too abstract or vague names. Names such as "button" or "list" should be avoided as they couldn't be properly defined to fit everywhere. As such you cannot reuse them properly. Too specific names are also not very useful, as they could prevent reuse on other parts of the page.
+
+```html
+<div class="my-block">
+  …
+</div>
+```
+
+```css
+.my-block {
+  /* … */
+}
+```
+
+*Good names:*
+```css
+.blog-article,
+.breadcrumbs,
+.pagination,
+.avatar-image,
+.language-picker
+```
+
+*Bad names:*
+```css
+.list,
+.main,
+.content,
+.avatar-image,
+.footer-language-button,
+.header-main-navigation-language-button
+```
+
+<a name="elementModifiers"></a>
+### Element modifiers
+
+Syntax: `<block-name>__<element-name>--<element-modifier-name>`
+Syntax-shortened: `__<element-name>--<element-modifier-name>`
+
+A block modifier is a class used to modify the appearance of a block in a certain context. A block modifier name is a dash spearated list of names.
+
+```css
+
+.my-block {
+  /* … */
+
+  &.my-block--my-modifier {
+    /* … */
+  }
+}
 ```
 
 ```html
-<article class="tweet is-expanded">
+<div class="my-block my-block--my-modifier">
   …
-</article>
+</div>
+```
+
+<a name="elementUsage"></a>
+### Element usage
+
+Not everything is a block. This is not minecraft. Just because an HTML element has children doesn't necessarily mean it is, or should be a block. If an HTML element, and it's styling makes no sense in the layout anywhere outside its position, it is not a block. If an HTML element cannot be reused, it is probably not a block. If an HTML element has no children, it is probably not a block. There are cases where this is not true, as each case is unique.
+
+*A bad block example*
+```html
+<div class="main-navigation">
+  <ul class="__list link-list">
+    <li class="__item item">
+      <a href="#" class="__link">
+    </li>
+    <li class="__item item">
+      <a href="#" class="__link">
+    </li>
+  </ul>
+</div>
+```
+
+```css
+.main-navigation {
+  /* … */
+
+  .__list {
+    /* … */
+  }
+}
+
+.link-list {
+  /* … */
+
+  .__item {
+    /* … */
+  }
+}
+
+.item {
+  /* … */
+
+  .__link {
+    /* … */
+  }
+}
+```
+
+*The "item" block is not really a block, it is actually only meaningful under the link-list (or even main-navigation) block. As such it should just be an element, even though it has a child element.*
+
+*Fixed example*
+```html
+<div class="main-navigation">
+  <ul class="__list link-list">
+    <li class="__item">
+      <a href="#" class="__link">
+    </li>
+    <li class="__item">
+      <a href="#" class="__link">
+    </li>
+  </ul>
+</div>
+```
+
+```css
+.main-navigation {
+  /* … */
+
+  .__list {
+    /* … */
+  }
+}
+
+.link-list {
+  /* … */
+
+  .__item {
+    /* … */
+  }
+
+  .__link {
+    /* … */
+  }
+}
 ```
 
 <a name="javascript"></a>
