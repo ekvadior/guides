@@ -241,17 +241,17 @@ Unlike blocks, element naming can be abstract and vague, as it is only meaningfu
 
 *Good names:*
 ```css
-.__item
-.__link
-.__title
-.__row
+.__item,
+.__link,
+.__title,
+.__row,
 .__column
 ```
 
 *Bad names:*
 ```css
-.__blog-article-title
-.__header-list
+.__blog-article-title,
+.__header-list,
 .__element /* Too vague even for an element */
 ```
 
