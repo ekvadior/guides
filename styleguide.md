@@ -70,13 +70,13 @@ Care should be taken not to use too abstract or vague names. Names such as "butt
 
 ```html
 <div class="my-block">
-  …
+  ...
 </div>
 ```
 
 ```css
 .my-block {
-  /* … */
+  /* ... */
 }
 ```
 
@@ -104,22 +104,22 @@ Care should be taken not to use too abstract or vague names. Names such as "butt
 
 Syntax: `<block-name>--<block-modifier-name>`
 
-A block modifier is a class used to modify the appearance of a block in a certain context. A block modifier name is a dash spearated list of names.
+A block modifier is a class used to modify the appearance of a block in a certain context. A block modifier name is a dash spearated list of names prefixed with the block name and two dashes.
 
 ```css
 
 .my-block {
-  /* … */
+  /* ... */
 
   &.my-block--my-modifier {
-    /* … */
+    /* ... */
   }
 }
 ```
 
 ```html
 <div class="my-block my-block--my-modifier">
-  …
+  ...
 </div>
 ```
 
@@ -144,26 +144,26 @@ Not everything is a block. This is not minecraft. Just because an HTML element h
 
 ```css
 .main-navigation {
-  /* … */
+  /* ... */
 
   .__list {
-    /* … */
+    /* ... */
   }
 }
 
 .link-list {
-  /* … */
+  /* ... */
 
   .__item {
-    /* … */
+    /* ... */
   }
 }
 
 .item {
-  /* … */
+  /* ... */
 
   .__link {
-    /* … */
+    /* ... */
   }
 }
 ```
@@ -186,22 +186,22 @@ Not everything is a block. This is not minecraft. Just because an HTML element h
 
 ```css
 .main-navigation {
-  /* … */
+  /* ... */
 
   .__list {
-    /* … */
+    /* ... */
   }
 }
 
 .link-list {
-  /* … */
+  /* ... */
 
   .__item {
-    /* … */
+    /* ... */
   }
 
   .__link {
-    /* … */
+    /* ... */
   }
 }
 ```
@@ -212,42 +212,47 @@ Not everything is a block. This is not minecraft. Just because an HTML element h
 Syntax: `<block-name>__<element-name>`
 Syntax-shortened: `__<element-name>`
 
+Elements only make sense inside a block. Never should an element be without it's block, either in HTML or SASS. When reusing the block, its elements don't necessarily have to be used in the same order, or at all.
+
 <a name="elementNaming"></a>
 ### Element naming
 
-Block name is a dash separated list of words describing the block and its use.
+Element name is a dash separated list of words describing the element and its use and purpose under its block. It is prefixed with the block name and two underscores or just two underscores as a shorthand.
 
-Care should be taken not to use too abstract or vague names. Names such as "button" or "list" should be avoided as they couldn't be properly defined to fit everywhere. As such you cannot reuse them properly. Too specific names are also not very useful, as they could prevent reuse on other parts of the page.
+Unlike blocks, element naming can be abstract and vague, as it is only meaningful under it's parent block. Still, care should be taken to have names that describe the element's use in a block. There is no point in using the block name in the element name, as that would only bring redundancy.
 
 ```html
 <div class="my-block">
-  …
+  <div class="__my-element">
+    ...
+  </div>
 </div>
 ```
 
 ```css
 .my-block {
-  /* … */
+  /* ... */
+
+  .__my-element {
+    /* ... */
+  }
 }
 ```
 
 *Good names:*
 ```css
-.blog-article,
-.breadcrumbs,
-.pagination,
-.avatar-image,
-.language-picker
+.__item
+.__link
+.__title
+.__row
+.__column
 ```
 
 *Bad names:*
 ```css
-.list,
-.main,
-.content,
-.avatar-image,
-.footer-language-button,
-.header-main-navigation-language-button
+.__blog-article-title
+.__header-list
+.__element /* Too vague even for an element */
 ```
 
 <a name="elementModifiers"></a>
@@ -256,107 +261,35 @@ Care should be taken not to use too abstract or vague names. Names such as "butt
 Syntax: `<block-name>__<element-name>--<element-modifier-name>`
 Syntax-shortened: `__<element-name>--<element-modifier-name>`
 
-A block modifier is a class used to modify the appearance of a block in a certain context. A block modifier name is a dash spearated list of names.
+An element modifier is a class used to modify the appearance of a element in a certain context. A element modifier name is a dash spearated list of names prefixed with the element name and two dashes.
 
 ```css
 
 .my-block {
-  /* … */
+  /* ... */
 
-  &.my-block--my-modifier {
-    /* … */
+  .__my-element {
+    /* ... */
+
+    &.__my-element--my-modifier {
+      /* ... */
+    }
   }
 }
 ```
 
 ```html
-<div class="my-block my-block--my-modifier">
-  …
+<div class="my-block">
+  <div class="__my-element __my-element--my-modifier">
+    ...
+  </div>
 </div>
 ```
 
 <a name="elementUsage"></a>
 ### Element usage
 
-Not everything is a block. This is not minecraft. Just because an HTML element has children doesn't necessarily mean it is, or should be a block. If an HTML element, and it's styling makes no sense in the layout anywhere outside its position, it is not a block. If an HTML element cannot be reused, it is probably not a block. If an HTML element has no children, it is probably not a block. There are cases where this is not true, as each case is unique.
 
-*A bad block example*
-```html
-<div class="main-navigation">
-  <ul class="__list link-list">
-    <li class="__item item">
-      <a href="#" class="__link">
-    </li>
-    <li class="__item item">
-      <a href="#" class="__link">
-    </li>
-  </ul>
-</div>
-```
-
-```css
-.main-navigation {
-  /* … */
-
-  .__list {
-    /* … */
-  }
-}
-
-.link-list {
-  /* … */
-
-  .__item {
-    /* … */
-  }
-}
-
-.item {
-  /* … */
-
-  .__link {
-    /* … */
-  }
-}
-```
-
-*The "item" block is not really a block, it is actually only meaningful under the link-list (or even main-navigation) block. As such it should just be an element, even though it has a child element.*
-
-*Fixed example*
-```html
-<div class="main-navigation">
-  <ul class="__list link-list">
-    <li class="__item">
-      <a href="#" class="__link">
-    </li>
-    <li class="__item">
-      <a href="#" class="__link">
-    </li>
-  </ul>
-</div>
-```
-
-```css
-.main-navigation {
-  /* … */
-
-  .__list {
-    /* … */
-  }
-}
-
-.link-list {
-  /* … */
-
-  .__item {
-    /* … */
-  }
-
-  .__link {
-    /* … */
-  }
-}
-```
 
 <a name="javascript"></a>
 ## JavaScript
@@ -523,14 +456,14 @@ CSS rules should be comma seperated but live on new lines:
 ```css
 .content,
 .content-edit {
-  …
+  ...
 }
 ```
 
 **Wrong:**
 ```css
 .content, .content-edit {
-  …
+  ...
 }
 ```
 
@@ -539,21 +472,21 @@ CSS blocks should be seperated by a single new line. not two. not 0.
 **Right:**
 ```css
 .content {
-  …
+  ...
 }
 .content-edit {
-  …
+  ...
 }
 ```
 
 **Wrong:**
 ```css
 .content {
-  …
+  ...
 }
 
 .content-edit {
-  …
+  ...
 }
 ```
 
