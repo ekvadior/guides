@@ -17,6 +17,14 @@
 * [JavaScript](#javascript)
 * [Is utility classes](#isClasses)
 * [SASS style guide](#sassGuide)
+  * [File organization](#fileOrganization)
+    * [vendor and overrides](#vendor)
+    * [core and config](#coreConfig)
+    * [utils](#utils)
+    * [components](#components)
+    * [pages](#pages)
+  * [Nesting](#nesting)
+  * [Rules organization](#rulesOrganization)
   * [Variables](#variables)
     * [colors](#colors)
     * [z-index](#zindex)
@@ -29,6 +37,8 @@
     * [Quotes](#quotes)
   * [Performance](#performance)
     * [Specificity](#specificity)
+
+------------------------------------------------------------------------------------------------------------------------------------------------
 
 <a name="bem"></a>
 #BEM
@@ -427,10 +437,122 @@ Is classes unlike js classes should have styling, but they shouldn't be used wit
 <a href="/login" class="__button __button--login js-login is-shown is-hovered"></a>
 ```
 
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 <a name="sassGuide"></a>
 ## SASS style guide
 
 For a reference of sass functionality refer to this page: [SASS reference](http://sass-lang.com/documentation/file.SASS_REFERENCE.html)
+
+*This should cover almost every case when writing sass, including file structures, imports, code organization and logic*
+
+<a name="fileOrganization"></a>
+## File organization
+
+In all web projects we usually have some kind of a css/sass folder, naming of which can sometimes be chosen. Usual names would be:
+
+* Stylesheets
+* Styles
+* CSS
+* SASS
+
+If needed, brush up on sass partials and imports, as those are important to understand the file structure.
+If the app is a Rails app, sprockets can be used instead of imports, differences will be noted when necessary.
+
+Because of the BEM philosophy, files will usually follow the strucutre of components (that being blocks). An example full structure would be:
+
+* **vendor**
+  * normalize.css
+  * other-vendor.css
+  * ...
+* **overrides**
+  * normalize.scss
+  * other-vendor.css
+  * ...
+* **utils**
+  * _colors.scss
+  * _z-indexes.scss
+  * _variables.scss
+  * _media.scss
+  * _placeholders.scss
+  * _mixins.scss
+  * _functions.scss
+* **components**
+  * _header.scss
+  * _nav-list.scss
+  * _article.scss
+  * ...
+* **pages**
+  * _homepage.scss
+  * _about-us.scss
+  * _some-other-page.scss
+  * ...
+* _config.scss
+* _core.scss
+* application.scss
+
+Only the main file (in example application.scss) should be a normal sass file, everything else should be a partial. This is so only one css file is generated, and when a file is not imported, it will not be unnecessarily compiled.
+
+The application.scss file should only hold imports, no actual rules, styling, variables, mixins etc. can go in it. Usually it would look something like:
+
+```css
+@import 'vendor/**/*';
+@import 'overrides/**/*'
+/* special imports */
+@import 'susy'; //for example
+
+@import 'utils/**/*';
+@import 'config';
+
+@import 'core';
+
+@import 'components/**/*';
+@import 'pages/**/*';
+```
+
+If everything is done correctly, load order shouldn't matter, so usage of wildcards is recommended in sass-rails projects. If using gulp-sass it might not work (currently it doesn't) so files need to be imported individualy. A recommended way of solving the libsass problem would be using folder name files to load. For example structure:
+
+* **folder**
+  * _first.scss
+  * _second.scss
+* _folder.scss
+* application.scss
+
+The folder scss file would contain:
+
+```css
+@import 'folder/first';
+@import 'folder/second';
+```
+
+And the application scss file would contain:
+
+```css
+@import 'folder';
+```
+
+If using sprockets, application.scss file would contain the rails way of importing using require. As such variables and other defines won't carry over to files, so they would have to be @imported manually as needed.
+
+<a name="vendor"></a>
+### Vendor and overrides
+
+The vendor folder should have css or scss files that are gotten from outside sources. As these files have nothing to do with the application styling, they should be loaded first. Any global overrides for the said files should go into the override folder, with the same name as the vendor file, so they can easily be found when necessary.
+
+<a name="coreConfig"></a>
+### Core and config
+
+The config file should contain any configuration for the imported vendors (Usual example would be susy), or other configuration for user defined mixins, functions  etc.
+
+The core file should contain and globaly defined styles for the application. That could mean setting a global font-size, adding global box-sizing and etc. The core file should not contain any configuration or mixins, variables and such, only styling (or includes of such).
+
+<a name="utils"></a>
+### Utils
+
+<a name="components"></a>
+### Components
+
+<a name="pages"></a>
+### Pages
 
 <a name="variables"></a>
 ## Variables
@@ -441,7 +563,7 @@ Variable names in our CSS are also strictly structured. This syntax provides str
 
 The following variable defintion is a color property, with the value grayLight, for use with the highlightMenu component.
 
-```CSS
+```css
 @color-grayLight--highlightMenu: rgb(51, 51, 50);
 ```
 
