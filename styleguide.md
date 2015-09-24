@@ -1,5 +1,7 @@
 # SASS style guide
 
+*Guides are not rules and should not be followed blindly. Use your head and think.*
+
 **Table of contents**
 
 * [SASS style guide](#sassGuide)
