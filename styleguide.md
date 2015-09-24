@@ -1,7 +1,5 @@
 # SASS style guide
 
-*Some smart and witty description of what this is.*
-
 **Table of contents**
 
 * [SASS style guide](#sassGuide)
@@ -18,20 +16,11 @@
       * [placeholders](#utilsPlaceholders)
       * [mixins](#utilsMixins)
       * [functions](#utilsFunctions)
-  * [Nesting](#nesting)
-  * [Rules organization](#rulesOrganization)
-  * [Variables](#variables)
-    * [colors](#colors)
-    * [z-index](#zindex)
-    * [font-weight](#fontweight)
-    * [line-height](#lineheight)
-    * [letter-spacing](#letterspacing)
-  * [Polyfills](#polyfills)
-  * [Formatting](#formatting)
-    * [Spacing](#spacing)
-    * [Quotes](#quotes)
-  * [Performance](#performance)
+  * [Code quality](#codeQuality)
+    * [Nesting](#nesting)
     * [Specificity](#specificity)
+    * [Rule order](#ruleOrder)
+    * [Formatting](#formatting)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -72,7 +61,6 @@ Because of the BEM philosophy, files will usually follow the strucutre of compon
   * _media.scss
   * _placeholders.scss
   * _mixins.scss
-  * _functions.scss
 * **components**
   * _header.scss
   * _nav-list.scss
@@ -160,7 +148,6 @@ The pages folder contains an scss file for each page on a site. The styles insid
 * [media](#utilsMedia)
 * [placeholders](#utilsPlaceholders)
 * [mixins](#utilsMixins)
-* [functions](#utilsFunctions)
 
 <a name="utilsColors"></a>
 ### Colors
@@ -230,137 +217,138 @@ $header-height: 250px;
 <a name="utilsMedia"></a>
 ### Media queries
 
-```css
+Media file should contain the variables and mixins used to define the media queries and breakpoints on the site. Usage of the media mixin on
+*link-to-mixin* is highly recommended. Otherwise, syntax is as follows.
 
+```css
+$breakpoint-tablet: '(max-width: 991px)';
+
+@mixin tablet() {
+  @media #{$breakpoint-tablet} {
+    @content
+  }
+}
 ```
 
-<a name="letterspacing"></a>
-### Letter spacing
+<a name="utilsPlaceholders"></a>
+### Placeholders
 
-Letter spacing should also be controlled with the following var scale.
+The placeholders file should contain globaly shared pseudclasses (or placeholders). Pseudoclasses in sass are classes beginning with %, which generate no css
+output, but can be extended using sass directive @extend.
+Example usage of a global placeholder.
 
 ```CSS
-@letterSpacing-tightest
-@letterSpacing-tighter
-@letterSpacing-tight
-@letterSpacing-normal
-@letterSpacing-loose
-@letterSpacing-looser
+%container {
+  @include container;
+  width: $content-width-large;
+
+  @include desktop {
+    width: $content-width-desktop;
+  }
+  @include tablet {
+    width: $content-width-tablet;
+  }
+  @include mobile {
+    width: $content-width-mobile;
+  }
+}
+
+//Or with media mixin
+%container {
+  @include container;
+  width: $content-width-large;
+
+  @include media(desktop) {
+    width: $content-width-desktop;
+  }
+  @include media(tablet) {
+    width: $content-width-tablet;
+  }
+  @include media(mobile){
+    width: $content-width-mobile;
+  }
+}
+
 ````
 
-<a name="polyfills"></a>
-## Polyfills
+<a name="utilsMixins"></a>
+### Mixins
 
-mixin syntax: `m-<propertyName>`
-
-At Medium we only use mixins to generate polyfills for browser prefixed properties.
-
-
-An example of a border radius mixin:
+The mixins file should contain any global mixin that can help organize sass better.
+For instance generating font styles.
 
 ```css
-.m-borderRadius(@radius) {
-  -webkit-border-radius: @radius;
-     -moz-border-radius: @radius;
-          border-radius: @radius;
+@mixin font-title() {
+  font-size: 38px;
+  font-family: Arial;
+  font-weight: bold;
 }
 ```
 
+<a name="codeQuality"></a>
+## Code quality
 
-<a name="formatting"></a>
-## Formatting
+Use of scss-lint is very recommended to force nesting, specificity, rule order and other rules in the following chapter.
 
-The following are some high level page formatting style rules.
+* [Nesting](#nesting)
+* [Specificity](#specificity)
+* [Rule order](#ruleOrder)
+* [Formatting](#formatting)
 
-<a name="spacing"></a>
-### Spacing
+<a name="nesting"></a>
+### Nesting
 
-CSS rules should be comma seperated but live on new lines:
+Nesting improves code readability, but must be taken into moderation. Usual rule is to nest no more than 3 times, with few exceptions.
+Usual example of three level nesting is seen in a simple block element with a modifier.
 
-**Right:**
 ```css
-.content,
-.content-edit {
-  ...
+.block {
+  //level 1 nesting
+
+  .block__element {
+    //level 2 nesting
+
+    &.block__element--modifier {
+      //level 3 nesting
+    }
+  }
 }
 ```
-
-**Wrong:**
-```css
-.content, .content-edit {
-  ...
-}
-```
-
-CSS blocks should be seperated by a single new line. not two. not 0.
-
-**Right:**
-```css
-.content {
-  ...
-}
-.content-edit {
-  ...
-}
-```
-
-**Wrong:**
-```css
-.content {
-  ...
-}
-
-.content-edit {
-  ...
-}
-```
-
-
-<a name="quotes"></a>
-### Quotes
-
-Quotes are optional in CSS and LESS. We use double quotes as it is visually clearer that the string is not a selector or a style property.
-
-**Right:**
-```css
-background-image: url("/img/you.jpg");
-font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial;
-```
-
-**Wrong:**
-```css
-background-image: url(/img/you.jpg);
-font-family: Helvetica Neue Light, Helvetica Neue, Helvetica, Arial;
-```
-
-<a name="performance"></a>
-## Performance
 
 <a name="specificity"></a>
 ### Specificity
 
-Although in the name (cascading style sheets) cascading can introduce unnecessary performance overhead for applying styles. Take the following example:
+Specificity is a bit more complex than nesting. With specificity you have to take into account the generated css output. Each level of nesting
+adds a level of specificity to a selector. Adding multiple selectors on a single line also adds to specificity, such as:
 
 ```css
-ul.user-list li span a:hover { color: red; }
+  //level 1 specificity
+  .button {
+
+  }
+
+  //level 2 specificity
+  .button.button-white {
+
+  }
+  //or
+  .button {
+    .button-white {
+
+    }
+  }
+
+  //level 3 specificity
+  .button.button-white.button-really-white {
+
+  }
+  //or
+  .button.button-white {
+    .button-really-white {
+
+    }
+  }
 ```
 
-Styles are resolved during the renderer's layout pass. The selectors are resolved right to left, exiting when it has been detected the selector does not match. Therefore, in this example every a tag has to be inspected to see if it resides inside a span and a list. As you can imagine this requires a lot of DOM walking and and for large documents can cause a significant increase in the layout time. For further reading checkout: https://developers.google.com/speed/docs/best-practices/rendering#UseEfficientCSSSelectors
-
-If we know we want to give all `a` elements inside the `.user-list` red on hover we can simplify this style to:
-
-```css
-.user-list > a:hover {
-  color: red;
-}
-```
-
-If we want to only style specific `a` elements inside `.user-list` we can give them a specific class:
-
-```css
-.user-list > .link-primary:hover {
-  color: red;
-}
-```
-
+Specificity should be 4 levels maximum.
 ------------------------------------------------------------------------------------------------------------------------------------------------

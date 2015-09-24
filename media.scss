@@ -119,7 +119,3 @@ $breakpoints: (
     @content;
   }
 }
-
-@include media(mobile large) {
-  width: 1px;
-}

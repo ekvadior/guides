@@ -35,18 +35,18 @@ A Modifier (or modificator) can be put on both the block and element, and is use
 
 ```html
 <form class="login-form">
-  <div class="__row">
-    <label class="__label">Username:</label>
-    <input class="__input __input--username" />
+  <div class="login-form__row">
+    <label class="login-form__label">Username:</label>
+    <input class="login-form__input login-form__input--username" />
   </div>
-  <div class="__row">
-    <label class="__label">Password:</label>
-    <input class="__input __input--password" />
+  <div class="login-form__row">
+    <label class="login-form__label">Password:</label>
+    <input class="login-form__input login-form__input--password" />
   </div>
 </form>
 ```
 
-*Where the class "login-form" is the block name, clasess "__row", "__label" and "__input" are elements and classes "__input--username" and "__input--password" are modifiers.*
+*Where the class "login-form" is the block name, clasess "login-form__row", "login-form__label" and "login-form__input" are elements and classes "login-form__input--username" and "login-form__input--password" are modifiers.*
 
 <a name="blocks"></a>
 ## Blocks
@@ -123,12 +123,12 @@ Not everything is a block. This is not minecraft. Just because an HTML element h
 *A bad block example*
 ```html
 <div class="main-navigation">
-  <ul class="__list link-list">
-    <li class="__item item">
-      <a href="#" class="__link">
+  <ul class="main-navigation__list link-list">
+    <li class="link-list__item item">
+      <a href="#" class="item__link">
     </li>
-    <li class="__item item">
-      <a href="#" class="__link">
+    <li class="link-list__item item">
+      <a href="#" class="item__link">
     </li>
   </ul>
 </div>
@@ -138,7 +138,7 @@ Not everything is a block. This is not minecraft. Just because an HTML element h
 .main-navigation {
   /* ... */
 
-  .__list {
+  .main-navigation__list {
     /* ... */
   }
 }
@@ -146,7 +146,7 @@ Not everything is a block. This is not minecraft. Just because an HTML element h
 .link-list {
   /* ... */
 
-  .__item {
+  .link-list__item {
     /* ... */
   }
 }
@@ -154,7 +154,7 @@ Not everything is a block. This is not minecraft. Just because an HTML element h
 .item {
   /* ... */
 
-  .__link {
+  .item__link {
     /* ... */
   }
 }
@@ -165,12 +165,12 @@ Not everything is a block. This is not minecraft. Just because an HTML element h
 *Fixed example*
 ```html
 <div class="main-navigation">
-  <ul class="__list link-list">
-    <li class="__item">
-      <a href="#" class="__link">
+  <ul class="main-navigation__list link-list">
+    <li class="link-list__item">
+      <a href="#" class="link-list__link">
     </li>
-    <li class="__item">
-      <a href="#" class="__link">
+    <li class="link-list__item">
+      <a href="#" class="link-list__link">
     </li>
   </ul>
 </div>
@@ -180,7 +180,7 @@ Not everything is a block. This is not minecraft. Just because an HTML element h
 .main-navigation {
   /* ... */
 
-  .__list {
+  .main-navigation__list {
     /* ... */
   }
 }
@@ -188,11 +188,11 @@ Not everything is a block. This is not minecraft. Just because an HTML element h
 .link-list {
   /* ... */
 
-  .__item {
+  .link-list__item {
     /* ... */
   }
 
-  .__link {
+  .link-list__link {
     /* ... */
   }
 }
@@ -207,13 +207,13 @@ Syntax-shortened: `__<element-name>`
 <a name="elementNaming"></a>
 ### Element naming
 
-Element name is a dash separated list of words describing the element and its use and purpose under its block. It is prefixed with the block name and two underscores or just two underscores as a shorthand.
+Element name is a dash separated list of words describing the element and its use and purpose under its block. It is prefixed with the block name and two underscores or just two underscores as a shorthand. Usage of full name is recommended as overriding behaviour might occur otherwise.
 
 Unlike blocks, element naming can be abstract and vague, as it is only meaningful under its parent block. Still, care should be taken to have names that describe the element's use in a block. There is no point in using the block name in the element name, as that would only bring redundancy.
 
 ```html
 <div class="my-block">
-  <div class="__my-element">
+  <div class="my-block__my-element">
     ...
   </div>
 </div>
@@ -223,7 +223,7 @@ Unlike blocks, element naming can be abstract and vague, as it is only meaningfu
 .my-block {
   /* ... */
 
-  .__my-element {
+  .my-block__my-element {
     /* ... */
   }
 }
@@ -258,10 +258,10 @@ An element modifier is a class used to modify the appearance of a element in a c
 .my-block {
   /* ... */
 
-  .__my-element {
+  .my-block__my-element {
     /* ... */
 
-    &.__my-element--my-modifier {
+    &.my-block__my-element--my-modifier {
       /* ... */
     }
   }
@@ -270,7 +270,7 @@ An element modifier is a class used to modify the appearance of a element in a c
 
 ```html
 <div class="my-block">
-  <div class="__my-element __my-element--my-modifier">
+  <div class="my-block__my-element my-block__my-element--my-modifier">
     ...
   </div>
 </div>
@@ -284,18 +284,18 @@ Elements only make sense inside a block. Never should an element be without its 
 *Bad elements example*
 ```html
 <div class="statistics-list">
-  <div class="__statistic statistic">
-    <span class="__plain-text">Over</span>
+  <div class="statistics-list__statistic statistic">
+    <span class="statistic__plain-text">Over</span>
     <h1 class="highlighted">
-      <span class="__text">22</span>
+      <span class="highlighted__text">22</span>
     </h1>
-    <span class="__plain-text">years of experience.</span>
+    <span class="statistic__plain-text">years of experience.</span>
   </div>
-  <div class="__statistic __statistic--no-first statistic">
+  <div class="statistics-list__statistic statistics-list__statistic--no-first statistic">
     <h1 class="highlighted">
-      <span class="__text">6</span>
+      <span class="highlighted__text">6</span>
     </h1>
-    <span class="__plain-text">Countries</span>
+    <span class="statistic__plain-text">Countries</span>
   </div>
 </div>
 ```
@@ -304,10 +304,10 @@ Elements only make sense inside a block. Never should an element be without its 
 .statistics-list {
   /* ... */
 
-  .__statistic {
+  .statistics-list__statistic {
     /* ... */
 
-    &.__statistic--no-first {
+    &.statistics-list__statistic--no-first {
       /* ... */
     }
   }
@@ -316,7 +316,7 @@ Elements only make sense inside a block. Never should an element be without its 
 .statistic {
   /* ... */
 
-  .__plain-text {
+  .statistic__plain-text {
     /* ... */
   }
 }
@@ -324,7 +324,7 @@ Elements only make sense inside a block. Never should an element be without its 
 .highlighted {
   /* ... */
 
-  .__text {
+  .highlighted__text {
     /* ... */
   }
 }
@@ -336,18 +336,18 @@ Elements only make sense inside a block. Never should an element be without its 
 *Fixed example*
 ```html
 <div class="statistics-list">
-  <div class="__statistic statistic">
-    <span class="__plain-text">Over</span>
-    <h1 class="__highlighted">
-      <span class="__text">22</span>
+  <div class="statistics-list__statistic statistic">
+    <span class="statistic__plain-text">Over</span>
+    <h1 class="statistic__highlighted">
+      <span class="statistic__text">22</span>
     </h1>
-    <span class="__plain-text">years of experience.</span>
+    <span class="statistic__plain-text">years of experience.</span>
   </div>
-  <div class="__statistic statistic statistic--no-first">
-    <h1 class="__highlighted">
-      <span class="__text">6</span>
+  <div class="statistics-list__statistic statistic statistic--no-first">
+    <h1 class="statistic__highlighted">
+      <span class="statistic__text">6</span>
     </h1>
-    <span class="__plain-text">Countries</span>
+    <span class="statistic__plain-text">Countries</span>
   </div>
 </div>
 ```
@@ -356,7 +356,7 @@ Elements only make sense inside a block. Never should an element be without its 
 .statistics-list {
   /* ... */
 
-  .__statistic {
+  .statistics-list__statistic {
     /* ... */
 
   }
@@ -369,15 +369,15 @@ Elements only make sense inside a block. Never should an element be without its 
     /* ... */
   }
 
-  .__plain-text {
+  .statistic__plain-text {
     /* ... */
   }
 
-  .__highlighted {
+  .statistic__highlighted {
     /* ... */
   }
 
-  .__text {
+  .statistic__text {
     /* ... */
   }
 }
