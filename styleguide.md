@@ -293,7 +293,6 @@ Use of scss-lint is very recommended to force nesting, specificity, rule order a
 * [Nesting](#nesting)
 * [Specificity](#specificity)
 * [Rule order](#ruleOrder)
-* [Formatting](#formatting)
 
 <a name="nesting"></a>
 ### Nesting
@@ -351,4 +350,20 @@ adds a level of specificity to a selector. Adding multiple selectors on a single
 ```
 
 Specificity should be 4 levels maximum.
+
+<a name="ruleOrder"></a>
+### Rule order
+
+Rule order inside a selector are as follows:
+
+* extends
+* includes without @content
+* properties
+* nested properties
+* includes with content
+* pseduoclasses (e.g. :hover)
+* pseudoelements
+* parent selector modifiers (e.g. &.is-active)
+* children element selectors
+
 ------------------------------------------------------------------------------------------------------------------------------------------------
