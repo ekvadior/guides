@@ -290,6 +290,9 @@ For instance generating font styles.
 <a name="codeQuality"></a>
 ## Code quality
 
+Please don't ever use tag selectors if it can be avoided. They are usually much slower than any class selector, and almost always have to be
+overridden
+
 Use of scss-lint is very recommended to force nesting, specificity, rule order and other rules in the following chapter.
 
 * [Nesting](#nesting)
@@ -325,28 +328,30 @@ adds a level of specificity to a selector. Adding multiple selectors on a single
 ```css
   //level 1 specificity
   .button {
-
+    //properties...
   }
 
   //level 2 specificity
   .button.button-white {
-
+    //properties...
   }
   //or
   .button {
     .button-white {
-
+      //properties...
     }
   }
 
   //level 3 specificity
   .button.button-white.button-really-white {
-
+    //properties...
   }
   //or
-  .button.button-white {
-    .button-really-white {
-
+  .button {
+    &.button-white {
+      .button-really-white {
+        //properties...
+      }
     }
   }
 ```
@@ -362,9 +367,9 @@ Rule order inside a selector are as follows:
 * includes without @content
 * properties
 * nested properties
-* includes with content
+* includes with @content
 * pseduoclasses (e.g. :hover)
-* pseudoelements
+* pseudoelements (e.g. ::after)
 * parent selector modifiers (e.g. &.is-active)
 * children element selectors
 
