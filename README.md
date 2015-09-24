@@ -1,5 +1,5 @@
 # guides
 WIP guides
 
-[BEM](bem.md)
-[Styleguide](styleguide.md)
+* [BEM](bem.md)
+* [Styleguide](styleguide.md)
