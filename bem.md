@@ -1,6 +1,6 @@
 # BEM
 
-*Some smart and witty description of what this is.*
+*Guides are not rules and should not be followed blindly. Use your head and think.*
 
 **Table of contents**
 
