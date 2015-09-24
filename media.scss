@@ -1,0 +1,125 @@
+//breakpoints have to be defined such as this, with both end of one and start of next the same value, it will be calculated correctly in output.
+//first breakpoint has to start from 0
+//last breakpoint should only have one value if the other is infinity
+
+//USAGE:
+// @include media(mobile tablet desktop) {
+//   properties...
+// }
+//OUTPUT:
+//@media (max-width: 1199px) {
+//  properties...
+//}
+
+// @include media(mobile large) {
+//   properties...
+// }
+//OUTPUT:
+//@media (max-width: 767px) and (min-width: 1200px) {
+//  properties...
+//}
+
+$breakpoints: (
+  mobile: 0 768,
+  tablet: 768 992,
+  desktop: 992 1200,
+  large: 1200
+);
+
+@function remove-element($list, $value) {
+  $result: ();
+
+  @for $i from 1 through length($list) {
+    @if nth($list, $i) != $value {
+      $result: append($result, nth($list, $i));
+    }
+  }
+
+  @return $result;
+}
+
+@function remove-duplicates($list) {
+  $result: ();
+  $i: 0;
+  @each $item-first in $list {
+    $i: $i + 1;
+    $should-add: true;
+    $index: $i;
+    $j: 0;
+
+    @each $item-second in $list {
+      $j: $j + 1;
+      @if $item-first == $item-second and not ($j == $index) {
+        $should-add: false;
+      }
+    }
+
+    @if $should-add == true {
+      $result: append($result, $item-first);
+    }
+  }
+
+  @return $result;
+}
+
+@function join-queries($queries) {
+  $list: (0);
+  @each $q in $queries {
+    @each $key, $val in $breakpoints {
+      @if $q == $key {
+        $list: join($list, $val);
+      }
+    }
+  }
+
+  $list: remove-duplicates($list);
+
+  @return $list;
+}
+
+@function get-query($list, $flag) {
+  $strings: ();
+  @each $item in $list {
+    @if $flag == true {
+      $strings: append($strings, '(min-width: #{$item}px)');
+      $flag: false;
+    } @else {
+      $val: $item - 1;
+      $strings: append($strings, '(max-width: #{$val}px)');
+      $flag: true;
+    }
+  }
+
+  $result: '';
+  @each $str in $strings {
+    $result: $result + $str + ' and ';
+  }
+  $result: str-slice($result, 0, str-length($result) - 5);
+  $result: unquote($result);
+
+  @return $result;
+}
+
+@mixin media($queries) {
+  $breakpoint-list: join-queries($queries);
+  $flag: false;
+
+  @if index($breakpoint-list, 0) {
+    $flag: true;
+    $breakpoint-list: remove-element($breakpoint-list, 0);
+  }
+
+  $query: get-query($breakpoint-list, $flag);
+
+  @if $query == '' {
+    $query: all;
+  }
+
+  @media #{$query} {
+    @content;
+  }
+}
+
+@include media(mobile large) {
+  width: 1px;
+}

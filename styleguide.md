@@ -1,28 +1,23 @@
-# Writing frontend
+# SASS style guide
 
 *Some smart and witty description of what this is.*
 
 **Table of contents**
 
-* [BEM](#BEM)
-  * [blocks](#blocks)
-    * [block naming](#blockNaming)
-    * [block modifiers](#blockModifiers)
-    * [block usage](#blockUsage)
-  * [elements](#elements)
-    * [element naming](#elementNaming)
-    * [element modifiers](#elementModifiers)
-    * [element usage](#elementUsage)
-  * [other notes](#bemNotes)
-* [JavaScript](#javascript)
-* [Is utility classes](#isClasses)
 * [SASS style guide](#sassGuide)
   * [File organization](#fileOrganization)
     * [vendor and overrides](#vendor)
     * [core and config](#coreConfig)
-    * [utils](#utils)
     * [components](#components)
     * [pages](#pages)
+    * [utils](#utils)
+      * [colors](#utilsColors)
+      * [z-indexes](#utilsZIndex)
+      * [variables](#utilsVariables)
+      * [media](#utilsMedia)
+      * [placeholders](#utilsPlaceholders)
+      * [mixins](#utilsMixins)
+      * [functions](#utilsFunctions)
   * [Nesting](#nesting)
   * [Rules organization](#rulesOrganization)
   * [Variables](#variables)
@@ -37,405 +32,6 @@
     * [Quotes](#quotes)
   * [Performance](#performance)
     * [Specificity](#specificity)
-
-------------------------------------------------------------------------------------------------------------------------------------------------
-
-<a name="bem"></a>
-#BEM
-
-**BEM** stands for block - element - modifier, and is a philosophy of naming and structuring HTML and CSS classes. This guide will not only touch on the SASS side of things, but also on the HTML layout.
-
-Basic idea of BEM is to separate content into managable blocks - a type of componentization.
-A block is a piece of content that is encapsulated, meaning it doesn't rely on any other part of the page to be complete. Simplest example of a block could be a form. A block can be repeated endlessly on a site and should be able to fit into any other content without breaking too much (or at all, for that matter).
-
-An element is a part of a block. An element on in its own is meaningless and should always be below a block in the HTML tree. An element describes a part of a block, and by combining multiple elements a block is defined.
-
-A Modifier (or modificator) can be put on both the block and element, and is used to change the visual properties of a block or element. It is used so a block/element can be flexibly reused on other parts of a page, where a small modification is required.
-
-*A simple form block using BEM could look like this:*
-
-```html
-<form class="login-form">
-  <div class="__row">
-    <label class="__label">Username:</label>
-    <input class="__input __input--username" />
-  </div>
-  <div class="__row">
-    <label class="__label">Password:</label>
-    <input class="__input __input--password" />
-  </div>
-</form>
-```
-
-*Where the class "login-form" is the block name, clasess "__row", "__label" and "__input" are elements and classes "__input--username" and "__input--password" are modifiers.*
-
-<a name="blocks"></a>
-## Blocks
-
-Syntax: `<block-name>`
-
-<a name="blockNaming"></a>
-### Block naming
-
-Block name is a dash separated list of words describing the block and its use.
-
-Care should be taken not to use too abstract or vague names. Names such as "button" or "list" should be avoided as they couldn't be properly defined to fit everywhere. As such you cannot reuse them properly. Too specific names are also not very useful, as they could prevent reuse on other parts of the page.
-
-```html
-<div class="my-block">
-  ...
-</div>
-```
-
-```css
-.my-block {
-  /* ... */
-}
-```
-
-*Good names:*
-```css
-.blog-article,
-.breadcrumbs,
-.pagination,
-.avatar-image,
-.language-picker
-```
-
-*Bad names:*
-```css
-.list,
-.main,
-.content,
-.avatar-image,
-.footer-language-button,
-.header-main-navigation-language-button
-```
-
-<a name="blockModifiers"></a>
-### Block modifiers
-
-Syntax: `<block-name>--<block-modifier-name>`
-
-A block modifier is a class used to modify the appearance of a block in a certain context. A block modifier name is a dash spearated list of names prefixed with the block name and two dashes.
-
-```css
-
-.my-block {
-  /* ... */
-
-  &.my-block--my-modifier {
-    /* ... */
-  }
-}
-```
-
-```html
-<div class="my-block my-block--my-modifier">
-  ...
-</div>
-```
-
-<a name="blockUsage"></a>
-### Block usage
-
-Not everything is a block. This is not minecraft. Just because an HTML element has children doesn't necessarily mean it is, or should be a block. If an HTML element, and its styling makes no sense in the layout anywhere outside its position, it is not a block. If an HTML element cannot be reused, it is probably not a block. If an HTML element has no children, it is probably not a block. There are cases where this is not true, as each case is unique.
-
-*A bad block example*
-```html
-<div class="main-navigation">
-  <ul class="__list link-list">
-    <li class="__item item">
-      <a href="#" class="__link">
-    </li>
-    <li class="__item item">
-      <a href="#" class="__link">
-    </li>
-  </ul>
-</div>
-```
-
-```css
-.main-navigation {
-  /* ... */
-
-  .__list {
-    /* ... */
-  }
-}
-
-.link-list {
-  /* ... */
-
-  .__item {
-    /* ... */
-  }
-}
-
-.item {
-  /* ... */
-
-  .__link {
-    /* ... */
-  }
-}
-```
-
-*The "item" block is not really a block, it is actually only meaningful under the link-list (or even main-navigation) block. As such it should just be an element, even though it has a child element.*
-
-*Fixed example*
-```html
-<div class="main-navigation">
-  <ul class="__list link-list">
-    <li class="__item">
-      <a href="#" class="__link">
-    </li>
-    <li class="__item">
-      <a href="#" class="__link">
-    </li>
-  </ul>
-</div>
-```
-
-```css
-.main-navigation {
-  /* ... */
-
-  .__list {
-    /* ... */
-  }
-}
-
-.link-list {
-  /* ... */
-
-  .__item {
-    /* ... */
-  }
-
-  .__link {
-    /* ... */
-  }
-}
-```
-
-<a name="elements"></a>
-## Elements
-
-Syntax: `<block-name>__<element-name>`
-Syntax-shortened: `__<element-name>`
-
-<a name="elementNaming"></a>
-### Element naming
-
-Element name is a dash separated list of words describing the element and its use and purpose under its block. It is prefixed with the block name and two underscores or just two underscores as a shorthand.
-
-Unlike blocks, element naming can be abstract and vague, as it is only meaningful under its parent block. Still, care should be taken to have names that describe the element's use in a block. There is no point in using the block name in the element name, as that would only bring redundancy.
-
-```html
-<div class="my-block">
-  <div class="__my-element">
-    ...
-  </div>
-</div>
-```
-
-```css
-.my-block {
-  /* ... */
-
-  .__my-element {
-    /* ... */
-  }
-}
-```
-
-*Good names:*
-```css
-.__item,
-.__link,
-.__title,
-.__row,
-.__column
-```
-
-*Bad names:*
-```css
-.__blog-article-title,
-.__header-list,
-.__element /* Too vague even for an element */
-```
-
-<a name="elementModifiers"></a>
-### Element modifiers
-
-Syntax: `<block-name>__<element-name>--<element-modifier-name>`
-Syntax-shortened: `__<element-name>--<element-modifier-name>`
-
-An element modifier is a class used to modify the appearance of a element in a certain context. A element modifier name is a dash spearated list of names prefixed with the element name and two dashes.
-
-```css
-
-.my-block {
-  /* ... */
-
-  .__my-element {
-    /* ... */
-
-    &.__my-element--my-modifier {
-      /* ... */
-    }
-  }
-}
-```
-
-```html
-<div class="my-block">
-  <div class="__my-element __my-element--my-modifier">
-    ...
-  </div>
-</div>
-```
-
-<a name="elementUsage"></a>
-### Element usage
-
-Elements only make sense inside a block. Never should an element be without its block, either in HTML or SASS. When reusing the block, its elements don't necessarily have to be used in the same order, or at all.
-
-*Bad elements example*
-```html
-<div class="statistics-list">
-  <div class="__statistic statistic">
-    <span class="__plain-text">Over</span>
-    <h1 class="highlighted">
-      <span class="__text">22</span>
-    </h1>
-    <span class="__plain-text">years of experience.</span>
-  </div>
-  <div class="__statistic __statistic--no-first statistic">
-    <h1 class="highlighted">
-      <span class="__text">6</span>
-    </h1>
-    <span class="__plain-text">Countries</span>
-  </div>
-</div>
-```
-
-```css
-.statistics-list {
-  /* ... */
-
-  .__statistic {
-    /* ... */
-
-    &.__statistic--no-first {
-      /* ... */
-    }
-  }
-}
-
-.statistic {
-  /* ... */
-
-  .__plain-text {
-    /* ... */
-  }
-}
-
-.highlighted {
-  /* ... */
-
-  .__text {
-    /* ... */
-  }
-}
-```
-
-*The "highlighted" block is not really a block, it is an element, as it can only live inside of the statistic block. Also, the "__text" element it houses also makes sense only inside the statistic, so it is an element of statistic, and not highlighted.*
-*The "__statistic--no-first" modifier doesn't make sense, as the modifier should be applied to the statistic block. The "__statistic" element shouldn't worry about its content implementation, it should only have styles based on its position and appearance inside the "statistics-list" block.*
-
-*Fixed example*
-```html
-<div class="statistics-list">
-  <div class="__statistic statistic">
-    <span class="__plain-text">Over</span>
-    <h1 class="__highlighted">
-      <span class="__text">22</span>
-    </h1>
-    <span class="__plain-text">years of experience.</span>
-  </div>
-  <div class="__statistic statistic statistic--no-first">
-    <h1 class="__highlighted">
-      <span class="__text">6</span>
-    </h1>
-    <span class="__plain-text">Countries</span>
-  </div>
-</div>
-```
-
-```css
-.statistics-list {
-  /* ... */
-
-  .__statistic {
-    /* ... */
-
-  }
-}
-
-.statistic {
-  /* ... */
-
-  &.statistic--no-first {
-    /* ... */
-  }
-
-  .__plain-text {
-    /* ... */
-  }
-
-  .__highlighted {
-    /* ... */
-  }
-
-  .__text {
-    /* ... */
-  }
-}
-```
-
-<a name="bemNotes"></a>
-### Other notes
-
-* An HTML element can be a block and an element, and can have any number of modifiers for both of those, but will never be 2 or more blocks, or 2 or more elements.
-* A block should never care about its position on the page, only about its apperance. If a block needs to be positioned inside the block it is in, it is probably also an element of the parent block.
-* A modifier should not be used for a dynamic way of changing the appearance of a block or an elemnent. An is-class is used for that. As a modifier contains the block name it should not be selected through JavaScript, as well as any other block or element class.
-
-
-<a name="javascript"></a>
-## JavaScript
-
-syntax: `js-<identifier>`
-
-JavaScript specific classes are used to reduce the risk of breaking JavaScript behaviour and/or functionality. A JavaScript specific class should **never have any styling on it**, as it is used only as a selector for JavaScript. Any element that is needed to be selected directly from code should have a JavaScript specific class.
-
-*Example:*
-```html
-<a href="/login" class="__button __button--login js-login"></a>
-```
-
-<a name="isClasses"></a>
-## Is utility classes
-
-syntax: `is-<state-name|action-name>`
-
-Is classes should be used to make dynamic changes to the appearance of blocks or elements that are controlled through JavaScript. For example when you have a block that you will be showing and hiding through JavaScript, you would add an "is-shown" class to the block when it is shown.
-Is classes unlike js classes should have styling, but they shouldn't be used without JavaScript, as modifiers exist for the static styling.
-
-*Example:*
-```html
-<a href="/login" class="__button __button--login js-login is-shown is-hovered"></a>
-```
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -459,7 +55,7 @@ In all web projects we usually have some kind of a css/sass folder, naming of wh
 If needed, brush up on sass partials and imports, as those are important to understand the file structure.
 If the app is a Rails app, sprockets can be used instead of imports, differences will be noted when necessary.
 
-Because of the BEM philosophy, files will usually follow the strucutre of components (that being blocks). An example full structure would be:
+Because of the BEM philosophy, files will usually follow the strucutre of components (that being blocks). An example of a structure would be:
 
 * **vendor**
   * normalize.css
@@ -472,7 +68,7 @@ Because of the BEM philosophy, files will usually follow the strucutre of compon
 * **utils**
   * _colors.scss
   * _z-indexes.scss
-  * _variables.scss
+  * _shared-variables.scss
   * _media.scss
   * _placeholders.scss
   * _mixins.scss
@@ -501,8 +97,8 @@ The application.scss file should only hold imports, no actual rules, styling, va
 /* special imports */
 @import 'susy'; //for example
 
-@import 'utils/**/*';
 @import 'config';
+@import 'utils/**/*';
 
 @import 'core';
 
@@ -543,121 +139,99 @@ The vendor folder should have css or scss files that are gotten from outside sou
 
 The config file should contain any configuration for the imported vendors (Usual example would be susy), or other configuration for user defined mixins, functions  etc.
 
-The core file should contain and globaly defined styles for the application. That could mean setting a global font-size, adding global box-sizing and etc. The core file should not contain any configuration or mixins, variables and such, only styling (or includes of such).
-
-<a name="utils"></a>
-### Utils
+The core file should contain and globally defined styles for the application. That could mean setting a global font-size, adding global box-sizing and etc. The core file should not contain any configuration or mixins, variables and such, only styling (or includes of such).
 
 <a name="components"></a>
 ### Components
 
+The components folder contains blocks that are shared between pages. Those could be form definitions, button definitions and such. Each components has to be in its own file, with the name of the file matching that of the block name.
+
 <a name="pages"></a>
 ### Pages
 
-<a name="variables"></a>
-## Variables
+The pages folder contains an scss file for each page on a site. The styles inside should be specific to that page, while still following the bem philosophy. Any blocks that would be shared between pages fit into the components folder in a separate file, and not inside a specific page. The name of the file should match the page handle.
 
-Syntax: `<property>-<value>[--componentName]`
+<a name="utils"></a>
+### Utils
 
-Variable names in our CSS are also strictly structured. This syntax provides strong associations between property, use, and component.
+* [colors](#utilsColors)
+* [z-indexes](#utilsZIndex)
+* [shared variables](#utilsVariables)
+* [media](#utilsMedia)
+* [placeholders](#utilsPlaceholders)
+* [mixins](#utilsMixins)
+* [functions](#utilsFunctions)
 
-The following variable defintion is a color property, with the value grayLight, for use with the highlightMenu component.
-
-```css
-@color-grayLight--highlightMenu: rgb(51, 51, 50);
-```
-
-<a name="colors"></a>
+<a name="utilsColors"></a>
 ### Colors
 
-When implementing feature styles, you should only be using color variables provided by colors.less.
+The colors file should only contain color variables of the base and global kind.
+All colors for blocks or elements should go into their local file on the top.
 
-When adding a color variable to colors.less, using RGB and RGBA color units are preferred over hex, named, HSL, or HSLA values.
+Base colors are actual color values used on the site, they will be used by both global colors and block-elements colors. Syntax and example:
 
-**Right:**
+Syntax: `base-[value]-color`
+
 ```css
-rgb(50, 50, 50);
-rgba(50, 50, 50, 0.2);
+$base-red-color: #FF0000;
 ```
 
-**Wrong:**
+Only in base colors is the name of the color ok to use.
+
+Global colors are color to be used for block or element level colors. They should contain base colors.
+
+Syntax: `[primary, secondary, ternary ...]-<property>-color`
+
 ```css
-#FFF;
-#FFFFFF;
-white;
-hsl(120, 100%, 50%);
-hsla(120, 100%, 50%, 1);
+$primary-color: $base-red-color;
+$primary-text-color: $base-light-gray-color;
 ```
 
-<a name="zindex"></a>
-### z-index scale
+Block element colors go into their respective files on the top, and are defined as such:
+Syntax: `[block-name][__element-name]-<property>-color`
 
-Please use the z-index scale defined in z-index.less.
-
-`@zIndex-1 - @zIndex-9` are provided. Nothing should be higher then `@zIndex-9`.
-
-
-<a name="fontweight"></a>
-### Font Weight
-
-With the additional support of web fonts `font-weight` plays a more important role than it once did. Different font weights will render typefaces specifically created for that weight, unlike the old days where `bold` could be just an algorithm to fatten a typeface. Obvious uses the numerical value of `font-weight` to enable the best representation of a typeface. The following table is a guide:
-
-Raw font weights should be avoided. Instead, use the appropriate font mixin: `.font-sansI7, .font-sansN7, etc.`
-
-The suffix defines the weight and style:
-
-```CSS
-N = normal
-I = italic
-4 = normal font-weight
-7 = bold font-weight
+```css
+$some-block-background-color: $base-red-color;
+$some-block__some-element-color: $primary-text-color;
 ```
 
-Refer to type.less for type size, letter-spacing, and line height. Raw sizes, spaces, and line heights should be avoided outside of type.less.
+Text is the only property that can be omitted, as it the property name in css is color as well.
 
+<a name="utilsZIndex"></a>
+### Z-indexes
 
-```CSS
-ex:
+When using z-indexes, use z-index variables defined in z-indexes file.
+```css
+$z-base: inital;
+$z-modal: 10;
+$z-loader: 20;
+$z-modal-raised: 30;
+$z-notification: 40;
+$z-debug: 1000;
 
-@fontSize-micro
-@fontSize-smallest
-@fontSize-smaller
-@fontSize-small
-@fontSize-base
-@fontSize-large
-@fontSize-larger
-@fontSize-largest
-@fontSize-jumbo
+//For use in local situations only
+$z-1: 1;
+$z-2: 2;
+$z-3: 3;
+$z-4: 4;
+$z-5: 5;
 ```
 
-See [Mozilla Developer Network — font-weight](https://developer.mozilla.org/en/CSS/font-weight) for further reading.
+<a name="utilsVariables"></a>
+### Shared variables
 
+This file should only contain variables that will be shared across scss files, and doesn't include colors, z-indexes, media query or similiar.
+Example:
 
-<a name="lineheight"></a>
-### Line Height
-
-Type.less also provides a line height scale. This should be used for blocks of text.
-
-
-```CSS
-ex:
-
-@lineHeight-tightest
-@lineHeight-tighter
-@lineHeight-tight
-@lineHeight-baseSans
-@lineHeight-base
-@lineHeight-loose
-@lineHeight-looser
+```css
+$header-height: 250px;
 ```
 
-Alternatively, when using line height to vertically center a single line of text, be sure to set the line height to the height of the container - 1.
+<a name="utilsMedia"></a>
+### Media queries
 
-```CSS
-.btn {
-  height: 50px;
-  line-height: 49px;
-}
+```css
+
 ```
 
 <a name="letterspacing"></a>
@@ -788,3 +362,5 @@ If we want to only style specific `a` elements inside `.user-list` we can give t
   color: red;
 }
 ```
+
+------------------------------------------------------------------------------------------------------------------------------------------------
