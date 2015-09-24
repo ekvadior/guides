@@ -86,7 +86,6 @@ Care should be taken not to use too abstract or vague names. Names such as "butt
 .list,
 .main,
 .content,
-.avatar-image,
 .footer-language-button,
 .header-main-navigation-language-button
 ```
