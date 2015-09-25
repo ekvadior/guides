@@ -21,9 +21,9 @@
 
 $breakpoints: (
   mobile: 0 768,
-  tablet: 768 992,
-  desktop: 992 1200,
-  large: 1200
+  tablet: 768 1024,
+  desktop: 1024 1280,
+  large: 1280
 );
 
 @function remove-element($list, $value) {
@@ -41,6 +41,8 @@ $breakpoints: (
 @function remove-duplicates($list) {
   $result: ();
   $i: 0;
+
+  //remove all duplicates (both of them)
   @each $item-first in $list {
     $i: $i + 1;
     $should-add: true;
@@ -63,7 +65,10 @@ $breakpoints: (
 }
 
 @function join-queries($queries) {
+  //start list with 0, so it can be removed with duplicates/or used to determine min or max start
   $list: (0);
+
+  //join list of breakpoints based on queries
   @each $q in $queries {
     @each $key, $val in $breakpoints {
       @if $q == $key {
@@ -77,44 +82,60 @@ $breakpoints: (
   @return $list;
 }
 
-@function get-query($list, $flag) {
+@function get-query($list, $flag: false) {
+  //list of strings to concatenate
   $strings: ();
+
+  //for each item in list, go back and forth between min width and max width
   @each $item in $list {
     @if $flag == true {
       $strings: append($strings, '(min-width: #{$item}px)');
       $flag: false;
     } @else {
+
+      //min widths should go to 1 px less than breakpoint
       $val: $item - 1;
       $strings: append($strings, '(max-width: #{$val}px)');
       $flag: true;
     }
   }
 
+  //concatenate the generated strings with and
   $result: '';
   @each $str in $strings {
     $result: $result + $str + ' and ';
   }
+
+  //removing _and_ from string
   $result: str-slice($result, 0, str-length($result) - 5);
+
+  //unqoute for usage withing query block - check out sass strings as for why
   $result: unquote($result);
 
   @return $result;
 }
 
 @mixin media($queries) {
+  //generate joined breakpoint list without duplicates
   $breakpoint-list: join-queries($queries);
-  $flag: false;
+  $skip-first-max: false;
 
+  //if the 0 survived, it means we must start with max to get correct results
+  //also remove the 0, makes no sense to use it in media queries
   @if index($breakpoint-list, 0) {
-    $flag: true;
+    $skip-first-max: true;
     $breakpoint-list: remove-element($breakpoint-list, 0);
   }
 
-  $query: get-query($breakpoint-list, $flag);
+  //get the query string from breakpoint-list
+  $query: get-query($breakpoint-list, $skip-first-max);
 
+  //if the query is empty it means all items in list were duplicates, meaning all were selected
   @if $query == '' {
     $query: all;
   }
 
+  //actual media query - @content is were user content goes
   @media #{$query} {
     @content;
   }
